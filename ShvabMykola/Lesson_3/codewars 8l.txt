@@ -1,0 +1,46 @@
+1. https://www.codewars.com/kata/5168bb5dfe9a00b126000018/train/python
+def solution(string):
+    return string[::-1]
+
+2. https://www.codewars.com/kata/55d24f55d7dd296eb9000030/python
+def summation(num):
+    s = 0
+    for elem in range(num+1):
+        s += elem
+    return s
+
+3. https://www.codewars.com/kata/56dec885c54a926dcd001095/python
+def opposite(number):
+    return -number
+
+4. https://www.codewars.com/kata/55f9b48403f6b87a7c0000bd/python
+def paperwork(n, m):
+    return n*m if n>0 and m>0 else 0
+
+5. https://www.codewars.com/kata/56676e8fabd2d1ff3000000c/train/python
+def find_needle(haystack):
+    return 'found the needle at position ' + str(haystack.index('needle'))
+
+6. https://www.codewars.com/kata/5899dc03bc95b1bf1b0000ad/train/python
+def invert(lst): 
+    return [-x for x in lst]
+
+7. https://www.codewars.com/kata/5a00e05cc374cb34d100000d/python
+def reverse_seq(n):    
+    return [x for x in range(1,n+1)][::-1]
+
+8. https://www.codewars.com/kata/5b077ebdaf15be5c7f000077/train/python
+def count_sheep(n):
+    answ = ''
+    for x in range(1, n+1):
+        answ +=str(x) + ' sheep...'
+    return answ
+
+9. https://www.codewars.com/kata/53ee5429ba190077850011d4/train/python
+def double_integer(i):
+    return 2*i
+
+Я ВЖЕ НА 7 рівні!!! далі буду рухатися
+
+
+

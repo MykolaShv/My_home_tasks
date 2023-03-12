@@ -1,0 +1,55 @@
+18. https://www.codewars.com/kata/55902c5eaa8069a5b4000083/train/python
+def format_money(amount):
+    a, b = str(float(amount)).split('.')
+    if b == '0':
+        answ = '$'+a+'.00'
+    elif int(b) < 10 and len(b) != 2:
+        answ = '$' + a + '.' + b + '0'
+    else:
+        answ = '$' + a + '.' + b
+    return(answ)
+ можна так return '${:.2f}'.format(amount) КАПЕЦЬ
+
+19. https://www.codewars.com/kata/56541980fa08ab47a0000040/train/python
+def printer_error(s):
+    l = len(s)
+    k = 0
+    for el in s:
+        if 109 < ord(el) < 123:
+            k += 1
+    return  str(k)+'/' + str(l) 
+можна так  return "{}/{}".format(len([x for x in s if x not in "abcdefghijklm"]), len(s))
+
+20. https://www.codewars.com/kata/57cebe1dc6fdc20c57000ac9/train/python
+def find_short(s):    
+    return min((len(x) for x in s.split()))
+можно із map return min(map(len, s.split(' ')))
+
+21. https://www.codewars.com/kata/57e76bc428d6fbc2d500036d/train/python
+def string_to_array(s):
+    return s.split() if len(s) else ['']
+ще проще return string.split(" ")
+
+22. https://www.codewars.com/kata/53dc23c68a0c93699800041d/train/python
+def smash(words):
+    return ' '.join(words)
+
+23. https://www.codewars.com/kata/54ba84be607a92aa900000f1/train/python
+def is_isogram(string):
+    s = string.lower()
+    for chr in s:
+        n = s.count(chr)
+        if n > 1:
+            return False       
+    return True
+ можна return len(string) == len(set(string.lower())) .... 
+
+24. https://www.codewars.com/kata/55a2d7ebe362935a210000b2/train/python
+def find_smallest_int(arr):
+    return min(arr)
+
+
+Я ПЕРЕЙШОВ на ШОСТИЙ рівень
+
+
+

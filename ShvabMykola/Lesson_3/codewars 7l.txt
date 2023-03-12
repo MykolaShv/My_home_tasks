@@ -1,0 +1,99 @@
+1. https://www.codewars.com/kata/5467e4d82edf8bbf40000155/train/python
+def descending_order(num):    
+    k = list(str(num))
+    k.sort()
+    k.reverse()
+    return int(''.join(k))
+
+2. https://www.codewars.com/kata/544675c6f971f7399a000e79/python
+def string_to_number(s):
+    return int(s)
+
+3. https://www.codewars.com/kata/57a0885cbb9944e24c00008e/train/python
+def remove_exclamation_marks(s):
+    return s.replace('!', '')
+
+4. https://www.codewars.com/kata/57f781872e3d8ca2a000007e/python
+def maps(a):
+    return [2*x for x in a]
+
+5. https://www.codewars.com/kata/59ca8246d751df55cc00014c/train/python
+def hero(bullets, dragons):
+    return True if bullets/2 >= dragons else False
+
+6. https://www.codewars.com/kata/53369039d7ab3ac506000467/train/python
+def bool_to_word(boolean):
+    return 'Yes' if boolean is True else 'No'
+
+7. https://www.codewars.com/kata/5390bac347d09b7da40006f6/train/python
+def to_jaden_case(string):
+    def to_jaden_case(string):
+    return string.title().replace('\'T', '\'t').replace('\'R', '\'r').replace('\'S', '\'s').replace('\'L', '\'l').replace('\'M', '\'m')
+
+8. https://www.codewars.com/kata/554e4a2f232cdd87d9000038/train/python
+def DNA_strand(dna):
+    ans = ''
+    ld = list(dna)
+    for el in ld:
+        if el=='A':
+            el = 'T'
+        elif el =='T':
+            el = 'A'
+        elif el =='C':
+            el = 'G'
+        elif el =='G':
+            el = 'C'
+        ans += el
+    return ans
+
+9. https://www.codewars.com/kata/5583090cbe83f4fd8c000051/train/python
+def digitize(n): 
+    t = list(str(n)[::-1])
+    y = []
+    for el in t:
+        y.append(int(el))
+    return y
+ саме проще map(int, str(n)[::-1])!!!! але то був не я
+
+10. https://www.codewars.com/kata/5a3fe3dde1ce0e8ed6000097/train/python
+def century(year):    
+    return int(year/100) + 1 if year%100 else int(year/100)
+
+11. https://www.codewars.com/kata/53dbd5315a3c69eed20002dd/train/python
+def filter_list(l):
+    l1 = []
+    for el in l:
+        if type(el) is int:
+            l1.append(el)
+    return l1
+і тут треба запамятати  [x for x in l if type(x) is not str]
+
+12. https://www.codewars.com/kata/55fd2d567d94ac3bc9000064/train/python
+def row_sum_odd_numbers(n):
+    return n**3
+
+13. https://www.codewars.com/kata/56bc28ad5bdaeb48760009b0/train/python
+def remove_char(s):
+    return s[1:-1]
+
+14. https://www.codewars.com/kata/57cc975ed542d3148f00015b/train/python
+def check(seq, elem):
+    if elem in seq:
+        k = True  
+    else:
+        k = False
+    return k
+все так просто return elem in seq
+
+15. https://www.codewars.com/kata/55b42574ff091733d900002f/train/python
+def friend(x):
+    return [x for x in x if len(x)==4]
+
+16. https://www.codewars.com/kata/57a0556c7cb1f31ab3000ad7/python
+def make_upper_case(s):
+    return s.upper()
+
+17. https://www.codewars.com/kata/57a0e5c372292dd76d000d7e/python
+def repeat_str(repeat, string):
+    return string * repeat
+
