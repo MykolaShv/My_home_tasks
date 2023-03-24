@@ -1,0 +1,318 @@
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]:
+Пароль користувача postgres:
+psql (15.2)
+УВАГА: Кодова стор?нка консол? (866) в?др?зняється в?д кодової стор?нки Windows (1251)
+         8-б?тов? символи можуть працювати неправильно. Детальн?ше у розд?л?
+         "Нотатки для користувач?в Windows" у документац?ї psql.
+Введ?ть "help", щоб отримати допомогу.
+
+postgres=# \! chcp 1251
+Active code page: 1251
+postgres=# \l
+                                                                  Список баз даних
+   Назва   | Власник  | Кодування |   Порядок сортування   |         Ctype          | Локалізація ICU | Постачальник локалі |     Права доступу
+-----------+----------+-----------+------------------------+------------------------+-----------------+---------------------+-----------------------
+ postgres  | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                |
+ py6       | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                |
+ template0 | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                | =c/postgres          +
+           |          |           |                        |                        |                 |                     | postgres=CTc/postgres
+ template1 | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                | =c/postgres          +
+           |          |           |                        |                        |                 |                     | postgres=CTc/postgres
+(4 рядки)
+
+
+postgres=# create database moves;
+CREATE DATABASE
+postgres=# \l
+                                                                  Список баз даних
+   Назва   | Власник  | Кодування |   Порядок сортування   |         Ctype          | Локалізація ICU | Постачальник локалі |     Права доступу
+-----------+----------+-----------+------------------------+------------------------+-----------------+---------------------+-----------------------
+ moves     | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                |
+ postgres  | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                |
+ py6       | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                |
+ template0 | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                | =c/postgres          +
+           |          |           |                        |                        |                 |                     | postgres=CTc/postgres
+ template1 | postgres | UTF8      | Ukrainian_Ukraine.1251 | Ukrainian_Ukraine.1251 |                 | libc                | =c/postgres          +
+           |          |           |                        |                        |                 |                     | postgres=CTc/postgres
+(5 рядків)
+
+
+postgres=# \c moves;
+Ви тепер під'єднані до бази даних "moves" як користувач "postgres".
+moves=# create table actors (id serial, word varchar(255), vocabulary_id integer);
+CREATE TABLE
+moves=# \d moves
+Не знайдено жодного відношення під назвою "moves".
+moves=# \d
+                 Список відношень
+ Схема  |     Назва     |      Тип      | Власник
+--------+---------------+---------------+----------
+ public | actors        | таблиця       | postgres
+ public | actors_id_seq | послідовність | postgres
+(2 рядки)
+
+
+moves=# \d actors
+                                        Таблиця "public.actors"
+   Стовпець    |          Тип           | Сортування | Обнуляється |          За замовчуванням
+---------------+------------------------+------------+-------------+------------------------------------
+ id            | integer                |            | not null    | nextval('actors_id_seq'::regclass)
+ word          | character varying(255) |            |             |
+ vocabulary_id | integer                |            |             |
+
+
+moves=# \d actors_id_seq
+               Послідовність "public.actors_id_seq"
+   Тип   | Початок | Мінімум |  Максимум  | Приріст | Цикли? | Кеш
+---------+---------+---------+------------+---------+--------+-----
+ integer |       1 |       1 | 2147483647 |       1 | no     |   1
+Власник: public.actors.id
+
+
+moves=# alter table actors rename column word to name;
+ALTER TABLE
+moves=# \d actors
+                                        Таблиця "public.actors"
+   Стовпець    |          Тип           | Сортування | Обнуляється |          За замовчуванням
+---------------+------------------------+------------+-------------+------------------------------------
+ id            | integer                |            | not null    | nextval('actors_id_seq'::regclass)
+ name          | character varying(255) |            |             |
+ vocabulary_id | integer                |            |             |
+
+
+moves=# alter table actors rename column vocabulary_id to year;
+ALTER TABLE
+
+moves=# \d actors
+                                      Таблиця "public.actors"
+ Стовпець |          Тип           | Сортування | Обнуляється |          За замовчуванням
+----------+------------------------+------------+-------------+------------------------------------
+ id       | integer                |            | not null    | nextval('actors_id_seq'::regclass)
+ name     | character varying(255) |            |             |
+ year     | integer                |            |             |
+
+
+moves=# insert into actors (name, year) values ('Pattinson Robert', 1995), ('Stewart Kristen', 1995), ('Cage Nicolas', 1996), ('Depp Johnny', 1993), ('Statham Jason', 1995), ('Jovovich Milla', 1994), ('Roberts Julia', 1998), ('Diesel Vin', 1990), ('Downey Jr. Robert', 1994), ('Pitt Brad', 1995), ('Butler Gerard', 1997), ('Efron Zach', 1997), ('Washington Denzel', 1996), ('Travolta John', 1996), ('Radcliffe Daniel', 1993);
+INSERT 0 15
+moves=# select * from actors;
+ id |       name        | year
+----+-------------------+------
+  1 | Pattinson Robert  | 1995
+  2 | Stewart Kristen   | 1995
+  3 | Cage Nicolas      | 1996
+  4 | Depp Johnny       | 1993
+  5 | Statham Jason     | 1995
+  6 | Jovovich Milla    | 1994
+  7 | Roberts Julia     | 1998
+  8 | Diesel Vin        | 1990
+  9 | Downey Jr. Robert | 1994
+ 10 | Pitt Brad         | 1995
+ 11 | Butler Gerard     | 1997
+ 12 | Efron Zach        | 1997
+ 13 | Washington Denzel | 1996
+ 14 | Travolta John     | 1996
+ 15 | Radcliffe Daniel  | 1993
+(15 рядків)
+
+moves=# create table films (id serial, name_film varchar(255), type_film varchar(255), country varchar(255));
+CREATE TABLE
+moves=# select * from films;
+ id | name_film | type_film | country
+----+-----------+-----------+---------
+(0 рядків)
+
+moves=# alter table films rename column country to production_company;
+ALTER TABLE
+moves=# select * from films;
+ id | name_film | type_film | production_company
+----+-----------+-----------+--------------------
+(0 рядків)
+
+moves=# insert into films (name_film, type_film, production_company) values ('Nimona', 'Animation', '20th Century Studios'), ('The Tigers Apprentice', 'Animation', 'Paramount Pictures'),('Sesame Street', 'Comedy', 'Warner Bros.'), ('Minecraft', 'Action', 'Warner Bros.'), ('Spider-Man', 'Animation', 'Sony Pictures'), ('Aquaman 2', 'Action', 'Warner Bros.'), ('Black Panther: Wakanda Forever', 'Science fiction', 'Disney');
+INSERT 0 7
+moves=# select * from films;
+ id |           name_film            |    type_film    |  production_company
+----+--------------------------------+-----------------+----------------------
+  1 | Nimona                         | Animation       | 20th Century Studios
+  2 | The Tigers Apprentice          | Animation       | Paramount Pictures
+  3 | Sesame Street                  | Comedy          | Warner Bros.
+  4 | Minecraft                      | Action          | Warner Bros.
+  5 | Spider-Man                     | Animation       | Sony Pictures
+  6 | Aquaman 2                      | Action          | Warner Bros.
+  7 | Black Panther: Wakanda Forever | Science fiction | Disney
+(7 рядків)
+
+
+moves=# create table directors (id serial, name varchar(255), years_live varchar(255), the_first_film  varchar(255), the_secomd_film  varchar(255));
+CREATE TABLE
+moves=# insert into directors (name) values ('Alfred Hitchcock'), ('Orson Welles'), ('John Ford'), ('Howard Hawks'), ('Martin Scorsese'), ('Akira Kurosawa'), ('Buster Keaton');
+INSERT 0 7
+moves=# insert into directors (name) values ('1899-1980'), ('1915-1985'), ('1895-1973'), ('1896-1977'), ('1942-present'), ('1910-1998'), ('1895-1966');
+INSERT 0 7
+moves=# select * from directors;
+ id |       name       | years_live | the_first_film | the_secomd_film
+----+------------------+------------+----------------+-----------------
+  1 | Alfred Hitchcock |            |                |
+  2 | Orson Welles     |            |                |
+  3 | John Ford        |            |                |
+  4 | Howard Hawks     |            |                |
+  5 | Martin Scorsese  |            |                |
+  6 | Akira Kurosawa   |            |                |
+  7 | Buster Keaton    |            |                |
+  8 | 1899-1980        |            |                |
+  9 | 1915-1985        |            |                |
+ 10 | 1895-1973        |            |                |
+ 11 | 1896-1977        |            |                |
+ 12 | 1942-present     |            |                |
+ 13 | 1910-1998        |            |                |
+ 14 | 1895-1966        |            |                |
+(14 рядків)
+
+moves=# insert into directors (years_live) values ('1899-1980'), ('1915-1985'), ('1895-1973'), ('1896-1977'), ('1942-present'), ('1910-1998'), ('1895-1966');
+INSERT 0 7
+moves=# select * from directors;
+ id |       name       |  years_live  | the_first_film | the_secomd_film
+----+------------------+--------------+----------------+-----------------
+  1 | Alfred Hitchcock |              |                |
+  2 | Orson Welles     |              |                |
+  3 | John Ford        |              |                |
+  4 | Howard Hawks     |              |                |
+  5 | Martin Scorsese  |              |                |
+  6 | Akira Kurosawa   |              |                |
+  7 | Buster Keaton    |              |                |
+  8 | 1899-1980        |              |                |
+  9 | 1915-1985        |              |                |
+ 10 | 1895-1973        |              |                |
+ 11 | 1896-1977        |              |                |
+ 12 | 1942-present     |              |                |
+ 13 | 1910-1998        |              |                |
+ 14 | 1895-1966        |              |                |
+ 15 |                  | 1899-1980    |                |
+ 16 |                  | 1915-1985    |                |
+ 17 |                  | 1895-1973    |                |
+ 18 |                  | 1896-1977    |                |
+ 19 |                  | 1942-present |                |
+ 20 |                  | 1910-1998    |                |
+ 21 |                  | 1895-1966    |                |
+(21 рядок)
+
+
+moves=# delete from directors WHERE 8<Id;
+DELETE 13
+moves=# select * from directors;
+ id |       name       | years_live | the_first_film | the_secomd_film
+----+------------------+------------+----------------+-----------------
+  1 | Alfred Hitchcock |            |                |
+  2 | Orson Welles     |            |                |
+  3 | John Ford        |            |                |
+  4 | Howard Hawks     |            |                |
+  5 | Martin Scorsese  |            |                |
+  6 | Akira Kurosawa   |            |                |
+  7 | Buster Keaton    |            |                |
+  8 | 1899-1980        |            |                |
+(8 рядків)
+
+
+moves=# delete from directors WHERE 8=Id;
+DELETE 1
+moves=# select * from directors;
+ id |       name       | years_live | the_first_film | the_secomd_film
+----+------------------+------------+----------------+-----------------
+  1 | Alfred Hitchcock |            |                |
+  2 | Orson Welles     |            |                |
+  3 | John Ford        |            |                |
+  4 | Howard Hawks     |            |                |
+  5 | Martin Scorsese  |            |                |
+  6 | Akira Kurosawa   |            |                |
+  7 | Buster Keaton    |            |                |
+(7 рядків)
+
+
+moves=# alter table directors drop column years_live;
+ALTER TABLE
+moves=# alter table directors drop column the_first_film;
+ALTER TABLE
+moves=# alter table directors drop column the_secomd_film;
+ALTER TABLE
+moves=# select * from directors;
+ id |       name
+----+------------------
+  1 | Alfred Hitchcock
+  2 | Orson Welles
+  3 | John Ford
+  4 | Howard Hawks
+  5 | Martin Scorsese
+  6 | Akira Kurosawa
+  7 | Buster Keaton
+(7 рядків)
+
+
+moves=# alter table directors add column  years_live varchar(255);
+ALTER TABLE
+moves=# select * from directors;
+ id |       name       | years_live
+----+------------------+------------
+  1 | Alfred Hitchcock |
+  2 | Orson Welles     |
+  3 | John Ford        |
+  4 | Howard Hawks     |
+  5 | Martin Scorsese  |
+  6 | Akira Kurosawa   |
+  7 | Buster Keaton    |
+(7 рядків)
+
+moves=# insert into directors (years_live) values ('1899-1980'), ('1915-1985'), ('1895-1973'), ('1896-1977'), ('1942-present'), ('1910-1998'), ('1895-1966');
+INSERT 0 7
+moves=# select * from directors;
+ id |       name       |  years_live
+----+------------------+--------------
+  1 | Alfred Hitchcock |
+  2 | Orson Welles     |
+  3 | John Ford        |
+  4 | Howard Hawks     |
+  5 | Martin Scorsese  |
+  6 | Akira Kurosawa   |
+  7 | Buster Keaton    |
+ 22 |                  | 1899-1980
+ 23 |                  | 1915-1985
+ 24 |                  | 1895-1973
+ 25 |                  | 1896-1977
+ 26 |                  | 1942-present
+ 27 |                  | 1910-1998
+ 28 |                  | 1895-1966
+(14 рядків)
+
+moves=# drop table directors;
+DROP TABLE
+moves=# select * from directors;
+ПОМИЛКА:  відношення "directors" не існує
+РЯДОК 1: select * from directors;
+                       ^
+moves=# create table directors (id serial, name varchar(255), years_live varchar(255), the_first_film  varchar(255), the_secomd_film  varchar(255));
+CREATE TABLE
+moves=# insert into directors (name, years_live, the_first_film , the_secomd_film) values
+moves-# ('Alfred Hitchcock', '1899-1980', 'Strangers on a Train', 'Rear Window'),
+moves-# ('Orson Welles', '1915-1985', 'Citizen Kane', 'Touch of Evil'),
+moves-# ('John Ford', '1895-1973', 'Stagecoach', 'The Searchers'),
+moves-# ('Howard Hawks', '1896-1977', 'Bringing Up Baby', 'Rio Bravo'),
+moves-# ('Martin Scorsese', '1942-present', 'Taxi Driver', 'Raging Bull'),
+moves-# ('Akira Kurosawa', '1910-1998', 'Rashomon', 'The Seven Samurai'),
+moves-# ('Buster Keaton', '1895-1966', 'Sherlock Jr', 'The Navigator');
+INSERT 0 7
+moves=# select * from directors;
+ id |       name       |  years_live  |    the_first_film    |  the_secomd_film
+----+------------------+--------------+----------------------+-------------------
+  1 | Alfred Hitchcock | 1899-1980    | Strangers on a Train | Rear Window
+  2 | Orson Welles     | 1915-1985    | Citizen Kane         | Touch of Evil
+  3 | John Ford        | 1895-1973    | Stagecoach           | The Searchers
+  4 | Howard Hawks     | 1896-1977    | Bringing Up Baby     | Rio Bravo
+  5 | Martin Scorsese  | 1942-present | Taxi Driver          | Raging Bull
+  6 | Akira Kurosawa   | 1910-1998    | Rashomon             | The Seven Samurai
+  7 | Buster Keaton    | 1895-1966    | Sherlock Jr          | The Navigator
+(7 рядків)
+
+
+moves=#
