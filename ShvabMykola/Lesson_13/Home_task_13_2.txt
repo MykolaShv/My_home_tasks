@@ -1,0 +1,153 @@
+postgres=# create database university;
+CREATE DATABASE
+postgres=# create table students (id serial, name_st varchar(255), id_gr integer);
+CREATE TABLE
+postgres=# create table groupes (id serial, name_gr varchar(255), id_teach integer);
+CREATE TABLE
+postgres=# create table teachers (id serial, name_te varchar(255));
+CREATE TABLE
+postgres=# insert into students (id, name_st, id_gr)  values (1, 'Student1', 1),  (1, 'Student1', 1), (2, 'Student2', 2), (3, 'Student3', 3), (4, 'Student4', 1), (5, 'Student5', 2), (6, 'Student6', 1), (7, 'Student7', 3), (8, 'Student8', 1), (9, 'Student9', 1), (10, 'Student10', 2), (11, 'Student11', 2), (12, 'Student12', 3), (13, 'Student13', 3), (14, 'Student14', 4), (15, 'Student15', 5), (16, 'Student16', 4), (17, 'Student17', 5), (18, 'Student18', 4), (19, 'Student19', 5),  (20, 'Student20', 4), (21, 'Student21', 5), (22, 'Student22', 6), (23, 'Student23', 7), (24, 'Student24', 6), (25, 'Student25', 7), (26, 'Student26', 7), (27, 'Student27', 7), (28, 'Student28', 7), (29, 'Student29', 6),   (30, 'Student30', 7);
+INSERT 0 31
+postgres=# select * from students;
+ id |  name_st  | id_gr
+----+-----------+-------
+  1 | Student1  |     1
+  1 | Student1  |     1
+  2 | Student2  |     2
+  3 | Student3  |     3
+  4 | Student4  |     1
+  5 | Student5  |     2
+  6 | Student6  |     1
+  7 | Student7  |     3
+  8 | Student8  |     1
+  9 | Student9  |     1
+ 10 | Student10 |     2
+ 11 | Student11 |     2
+ 12 | Student12 |     3
+ 13 | Student13 |     3
+ 14 | Student14 |     4
+ 15 | Student15 |     5
+ 16 | Student16 |     4
+ 17 | Student17 |     5
+ 18 | Student18 |     4
+ 19 | Student19 |     5
+ 20 | Student20 |     4
+ 21 | Student21 |     5
+ 22 | Student22 |     6
+ 23 | Student23 |     7
+ 24 | Student24 |     6
+ 25 | Student25 |     7
+ 26 | Student26 |     7
+ 27 | Student27 |     7
+ 28 | Student28 |     7
+ 29 | Student29 |     6
+ 30 | Student30 |     7
+(31 рядок)
+
+
+postgres=# DELETE FROM students  WHERE id  = 1;
+DELETE 2
+postgres=# insert into students (id, name_st, id_gr)  values (1, 'Student1', 1);
+INSERT 0 1
+ 
+postgres=# select * from students;
+ id |  name_st  | id_gr
+----+-----------+-------
+  2 | Student2  |     2
+  3 | Student3  |     3
+  4 | Student4  |     1
+  5 | Student5  |     2
+  6 | Student6  |     1
+  7 | Student7  |     3
+  8 | Student8  |     1
+  9 | Student9  |     1
+ 10 | Student10 |     2
+ 11 | Student11 |     2
+ 12 | Student12 |     3
+ 13 | Student13 |     3
+ 14 | Student14 |     4
+ 15 | Student15 |     5
+ 16 | Student16 |     4
+ 17 | Student17 |     5
+ 18 | Student18 |     4
+ 19 | Student19 |     5
+ 20 | Student20 |     4
+ 21 | Student21 |     5
+ 22 | Student22 |     6
+ 23 | Student23 |     7
+ 24 | Student24 |     6
+ 25 | Student25 |     7
+ 26 | Student26 |     7
+ 27 | Student27 |     7
+ 28 | Student28 |     7
+ 29 | Student29 |     6
+ 30 | Student30 |     7
+  1 | Student1  |     1
+(30 рядків)
+
+
+postgres=# insert into groupes (id, name_gr, id_teach) values (1, 'Grope A', 1), (2, 'Grope B', 2), (3, 'Grope C', 1), (4, 'Grope D', 2), (5, 'Grope E', 1), (6, 'Grope F', 3), (7, 'Grope G', 3);
+INSERT 0 7
+postgres=# select * from groupes;
+ id | name_gr | id_teach
+----+---------+----------
+  1 | Grope A |        1
+  2 | Grope B |        2
+  3 | Grope C |        1
+  4 | Grope D |        2
+  5 | Grope E |        1
+  6 | Grope F |        3
+  7 | Grope G |        3
+(7 рядків)
+
+postgres=# insert into teachers  (id , name_te) values (1, 'Teacher I'), (2, 'Teacher II'), (3, 'Teacher III');
+INSERT 0 3
+postgres=# select * from teachers;
+ id |   name_te
+----+-------------
+  1 | Teacher I
+  2 | Teacher II
+  3 | Teacher III
+(3 рядки)
+
+
+postgres=# SELECT  students.name_st,
+postgres-#         groupes.name_gr,
+postgres-#         teachers.name_te
+postgres-# FROM    students
+postgres-# join groupes on students.id_gr= groupes.id
+postgres-# join teachers on groupes.id_teach=teachers.id;
+  name_st  | name_gr |   name_te
+-----------+---------+-------------
+ Student2  | Grope B | Teacher II
+ Student3  | Grope C | Teacher I
+ Student4  | Grope A | Teacher I
+ Student5  | Grope B | Teacher II
+ Student6  | Grope A | Teacher I
+ Student7  | Grope C | Teacher I
+ Student8  | Grope A | Teacher I
+ Student9  | Grope A | Teacher I
+ Student10 | Grope B | Teacher II
+ Student11 | Grope B | Teacher II
+ Student12 | Grope C | Teacher I
+ Student13 | Grope C | Teacher I
+ Student14 | Grope D | Teacher II
+ Student15 | Grope E | Teacher I
+ Student16 | Grope D | Teacher II
+ Student17 | Grope E | Teacher I
+ Student18 | Grope D | Teacher II
+ Student19 | Grope E | Teacher I
+ Student20 | Grope D | Teacher II
+ Student21 | Grope E | Teacher I
+ Student22 | Grope F | Teacher III
+ Student23 | Grope G | Teacher III
+ Student24 | Grope F | Teacher III
+ Student25 | Grope G | Teacher III
+ Student26 | Grope G | Teacher III
+ Student27 | Grope G | Teacher III
+ Student28 | Grope G | Teacher III
+ Student29 | Grope F | Teacher III
+ Student30 | Grope G | Teacher III
+ Student1  | Grope A | Teacher I
+(30 рядків)
+

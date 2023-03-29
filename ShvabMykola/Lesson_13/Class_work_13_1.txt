@@ -1,0 +1,10 @@
+postgres=# SELECT title, name FROM books
+postgres-# INNER JOIN authors_books ON authors_books. book_id = books.id
+postgres-# INNER JOIN authors  ON authors.id = authors_books. author_id;
+       title        |      name
+--------------------+-----------------
+ Дюна               | Френк Герберт
+ Мастер и Маргарита | Михаил Булгаков
+ Белый клык         | Ждек Лондон
+ Фауст              | Иоган Гёте
+(4 рядки)

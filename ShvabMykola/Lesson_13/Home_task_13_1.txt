@@ -1,0 +1,218 @@
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]:
+Пароль користувача postgres:
+psql (15.2)
+УВАГА: Кодова стор?нка консол? (866) в?др?зняється в?д кодової стор?нки Windows (1251)
+         8-б?тов? символи можуть працювати неправильно. Детальн?ше у розд?л?
+         "Нотатки для користувач?в Windows" у документац?ї psql.
+Введ?ть "help", щоб отримати допомогу.
+
+postgres=# \! chcp 1251
+Active code page: 1251
+postgres=# CREATE TABLE authors (
+postgres(# id SERIAL PRIMARY KEY,
+postgres(# name VARCHAR(200) NOT NULL DEFAULT 'lore',
+postgres(# year DATE NOT NULL DEFAULT '1970-01-01'
+postgres(# );
+CREATE TABLE
+postgres=# CREATE TABLE books (
+postgres(# id SERIAL PRIMARY KEY,
+postgres(# title VARCHAR(200) NOT NULL DEFAULT 'noname',
+postgres(# genre_id INT NOT NULL DEFAULT 0
+postgres(# );
+CREATE TABLE
+postgres=# CREATE TABLE genres (
+postgres(# id SERIAL PRIMARY KEY,
+postgres(# genre VARCHAR(100) NOT NULL DEFAULT 'unknown'
+postgres(# );
+CREATE TABLE
+postgres=# CREATE TABLE authors_books (
+postgres(# author_id INT NOT NULL DEFAULT 0,
+postgres(# book_id INT NOT NULL DEFAULT 0
+postgres(# );
+CREATE TABLE
+postgres=# INSERT INTO genres (genre) VALUES
+postgres-# ('SF'),
+postgres-# ('novel'),
+postgres-# ('story'),
+postgres-# ('horror');
+INSERT 0 4
+postgres=#
+postgres=# INSERT INTO books(title, genre_id) VALUES
+postgres-# ('Мастер и Маргарита', 2),
+postgres-# ('Фауст', 0),
+postgres-# ('Белый клык', 3),
+postgres-# ('Дюна', 1),
+postgres-# ('Война и мир', 2);
+INSERT 0 5
+postgres=#
+postgres=# INSERT INTO authors (name) VALUES
+postgres-# ('Френк Герберт'),
+postgres-# ('Михаил Булгаков'),
+postgres-# ('Ждек Лондон'),
+postgres-# ('Иоган Гёте'),
+postgres-# ('Роберт Хайнлайн');
+INSERT 0 5
+postgres=#
+postgres=# INSERT INTO authors_books (author_id, book_id) VALUES
+postgres-# (1, 4),
+postgres-# (2, 1),
+postgres-# (3, 3),
+postgres-# (4, 2);
+INSERT 0 4
+postgres=# select * from genres;
+ id | genre
+----+--------
+  1 | SF
+  2 | novel
+  3 | story
+  4 | horror
+(4 рядки)
+
+
+postgres=# select * from books;
+ id |       title        | genre_id
+----+--------------------+----------
+  1 | Мастер и Маргарита |        2
+  2 | Фауст              |        0
+  3 | Белый клык         |        3
+  4 | Дюна               |        1
+  5 | Война и мир        |        2
+(5 рядків)
+
+
+postgres=# select * from authors;
+ id |      name       |    year
+----+-----------------+------------
+  1 | Френк Герберт   | 1970-01-01
+  2 | Михаил Булгаков | 1970-01-01
+  3 | Ждек Лондон     | 1970-01-01
+  4 | Иоган Гёте      | 1970-01-01
+  5 | Роберт Хайнлайн | 1970-01-01
+(5 рядків)
+
+
+postgres=# select * from authors_books;
+ author_id | book_id
+-----------+---------
+         1 |       4
+         2 |       1
+         3 |       3
+         4 |       2
+(4 рядки)
+
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# INNER JOIN genres ON (genres.id = books.genre_id);
+       title        | genre
+--------------------+-------
+ Мастер и Маргарита | novel
+ Белый клык         | story
+ Дюна               | SF
+ Война и мир        | novel
+(4 рядки)
+INNER  все що і там і там є. не ввійшло 4 | horror та  Фауст| 0
+
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# LEFT JOIN genres ON (genres.id = books.genre_id);
+       title        | genre
+--------------------+-------
+ Мастер и Маргарита | novel
+ Фауст              |
+ Белый клык         | story
+ Дюна               | SF
+ Война и мир        | novel
+(5 рядків)
+LEFT JOIN беремо ВСЕ в першій БД та шукаємо відповідники другої БД, якщо їх не має то пусто
+
+postgres=# SELECT title
+postgres-# FROM books
+postgres-# WHERE NOT EXISTS (
+postgres(# SELECT *
+postgres(# FROM genres
+postgres(# WHERE books.genre_id = genres.id
+postgres(# );
+ title
+-------
+ Фауст
+(1 рядок)
+Щоб вивести лише ТЕ ЧОГО не буде в попередній команді - 1й спосіб
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# LEFT JOIN genres ON (genres.id = books.genre_id)
+postgres-# WHERE genre IS NULL;
+ title | genre
+-------+-------
+ Фауст |
+(1 рядок)
+Щоб вивести лише ТЕ ЧОГО не буде в попередній команді - 2й спосіб
+
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# RIGHT JOIN genres ON (genres.id = books.genre_id);
+       title        | genre
+--------------------+--------
+ Мастер и Маргарита | novel
+ Белый клык         | story
+ Дюна               | SF
+ Война и мир        | novel
+                    | horror
+(5 рядків)
+RIGHT JOIN беремо ВСЕ в другій БД та шукаємо відповідники першої БД, якщо їх не має то пусто
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# LEFT JOIN genres ON (genres.id = books.genre_id)
+postgres-# UNION
+postgres-# SELECT title, genre
+postgres-# FROM books RIGHT JOIN genres ON (genres.id = books.genre_id);
+       title        | genre
+--------------------+--------
+ Фауст              |
+                    | horror
+ Война и мир        | novel
+ Белый клык         | story
+ Дюна               | SF
+ Мастер и Маргарита | novel
+(6 рядків)
+ВИВЕСТИ все і всіх - 1й спосіб
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# FULL JOIN genres ON (genres.id = books.genre_id);
+       title        | genre
+--------------------+--------
+ Мастер и Маргарита | novel
+ Фауст              |
+ Белый клык         | story
+ Дюна               | SF
+ Война и мир        | novel
+                    | horror
+(6 рядків)
+ВИВЕСТИ все і всіх - 2й спосіб 
+
+postgres=# ALTER TABLE genres RENAME COLUMN id TO genre_id;
+ALTER TABLE
+була уніфкація  полей. тоді запрос буде проще
+
+postgres=# SELECT title, genre
+postgres-# FROM books
+postgres-# RIGHT JOIN genres USING(genre_id);
+       title        | genre
+--------------------+--------
+ Мастер и Маргарита | novel
+ Белый клык         | story
+ Дюна               | SF
+ Война и мир        | novel
+                    | horror
+(5 рядків)
+
+
+postgres=#

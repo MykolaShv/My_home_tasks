@@ -1,0 +1,60 @@
+postgres=# CREATE TABLE test1 (
+postgres(#   id INTEGER NOT NULL,
+postgres(#   parent INTEGER,
+postgres(#   PRIMARY KEY (id),
+postgres(#   FOREIGN KEY (parent) REFERENCES test1 (id)
+postgres(#     ON UPDATE CASCADE
+postgres(#     ON DELETE CASCADE
+postgres(# );
+CREATE TABLE
+postgres=# SELECT * from test1;
+ id | parent
+----+--------
+(0 рядків)
+
+postgres-# VALUES (1, NULL);
+INSERT 0 1
+postgres=# select * from test1
+postgres-# ;
+ id | parent
+----+--------
+  1 |
+(1 рядок)
+
+
+postgres=# INSERT INTO test1 (id, parent)
+postgres-# VALUES (2, 1);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (3,1);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (4,1);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (5,2);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (6,2);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (7,3);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (8,4);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (9,4);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (10,4);
+INSERT 0 1
+postgres=# INSERT INTO test1 (id, parent) VALUES (11,4);
+INSERT 0 1
+postgres=# select * from test1;
+ id | parent
+----+--------
+  1 |
+  2 |      1
+  3 |      1
+  4 |      1
+  5 |      2
+  6 |      2
+  7 |      3
+  8 |      4
+  9 |      4
+ 10 |      4
+ 11 |      4
+(11 рядків)
