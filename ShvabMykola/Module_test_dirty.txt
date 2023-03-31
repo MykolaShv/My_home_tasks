@@ -1,0 +1,971 @@
+Username [postgres]:
+Пароль користувача postgres:
+psql (15.2)
+УВАГА: Кодова стор?нка консол? (866) в?др?зняється в?д кодової стор?нки Windows (1251)
+         8-б?тов? символи можуть працювати неправильно. Детальн?ше у розд?л?
+         "Нотатки для користувач?в Windows" у документац?ї psql.
+Введ?ть "help", щоб отримати допомогу.
+
+postgres=# \! chcp 1251
+Active code page: 1251
+
+-- ЗАДАЧА 1. ТАБЛИЦЯ
+
+postgres=# CREATE TABLE modtask (id serial, name varchar(255), pwd varchar(255), email varchar(255), gender varchar(1));
+
+postgres=# insert into modtask (id, name, pwd, email, gender) values
+postgres-# (1, 'Vasya', '21341234qwfsdf', 'mmm@mmail.com ', 'm'),
+postgres-# (2, 'Alex', '21341234', 'mmm@gmail.com', 'm'),
+postgres-# (3, 'Alexey', 'qq21341234Q', 'alexey@gmail.com', 'm'),
+postgres-# (4, 'Helen', 'MarryMeeee', 'hell@gmail.com', 'f'),
+postgres-# (5, 'Jenny', 'SmakeMyb', 'eachup@gmail.com', 'f'),
+postgres-# (6, 'Lora', 'burn23', 'tpicks@gmail.com', 'f');
+INSERT 0 6
+postgres=# select * from modtask;
+ id |  name  |      pwd       |      email       | gender
+----+--------+----------------+------------------+--------
+  1 | Vasya  | 21341234qwfsdf | mmm@mmail.com    | m
+  2 | Alex   | 21341234       | mmm@gmail.com    | m
+  3 | Alexey | qq21341234Q    | alexey@gmail.com | m
+  4 | Helen  | MarryMeeee     | hell@gmail.com   | f
+  5 | Jenny  | SmakeMyb       | eachup@gmail.com | f
+  6 | Lora   | burn23         | tpicks@gmail.com | f
+(6 рядків)
+
+-- ЗАДАЧА 2 This is
+
+postgres=# SELECT CONCAT (id, name, pwd, email, gender)  FROM modtask;
+               concat
+-------------------------------------
+ 1Vasya21341234qwfsdfmmm@mmail.com m
+ 2Alex21341234mmm@gmail.comm
+ 3Alexeyqq21341234Qalexey@gmail.comm
+ 4HelenMarryMeeeehell@gmail.comf
+ 5JennySmakeMybeachup@gmail.comf
+ 6Loraburn23tpicks@gmail.comf
+(6 рядків)
+
+
+postgres=# SELECT CONCAT ('This is ', name, ', he/she has email ', email)  FROM modtask;
+                      concat
+---------------------------------------------------
+ This is Vasya, he/she has email mmm@mmail.com
+ This is Alex, he/she has email mmm@gmail.com
+ This is Alexey, he/she has email alexey@gmail.com
+ This is Helen, he/she has email hell@gmail.com
+ This is Jenny, he/she has email eachup@gmail.com
+ This is Lora, he/she has email tpicks@gmail.com
+(6 рядків)
+
+--А ДАЛІ ТУПО ЕКСПЕРЕМЕНТУВАВ 
+
+postgres=# insert into heshe values (CONCAT ('This is ', name, ', he/she has email ', email)  FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...('This is ', name, ', he/she has email ', email)  FROM modta...
+                                                              ^
+postgres=# insert into heshe values (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# insert into heshe values (SELECT CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "SELECT"
+РЯДОК 1: insert into heshe values (SELECT CONCAT ('This is ', name, '...
+                                   ^
+postgres=# insert into heshe values (CONCAT 'This is ', name, ', he/she has email ', email FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...AT 'This is ', name, ', he/she has email ', email FROM modta...
+                                                              ^
+postgres=# insert into heshe values (CONCAT 'This is ', name, ', he/she has email ', email modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "modtask"
+РЯДОК 1: ...CAT 'This is ', name, ', he/she has email ', email modtask);
+                                                               ^
+postgres=# insert into heshe values (CONCAT 'This is ', name, ', he/she has email ', email);
+ПОМИЛКА:  тип "concat" не існує
+РЯДОК 1: insert into heshe values (CONCAT 'This is ', name, ', he/she...
+                                   ^
+postgres=# insert into heshe values (CONCAT ('This is ', name, ', he/she has email ', email));
+ПОМИЛКА:  стовпця "name" не існує
+РЯДОК 1: insert into heshe values (CONCAT ('This is ', name, ', he/sh...
+                                                       ^
+postgres=# insert into heshe values (CONCAT ('This is ', name, ', he/she has email ', email)) FROM modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...('This is ', name, ', he/she has email ', email)) FROM modta...
+                                                              ^
+postgres=# K =  (CONCAT ('This is ', name, ', he/she has email ', email)) FROM modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "K"
+РЯДОК 1: K =  (CONCAT ('This is ', name, ', he/she has email ', email...
+         ^
+postgres=# K =  CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "K"
+РЯДОК 1: K =  CONCAT ('This is ', name, ', he/she has email ', email)...
+         ^
+postgres=# insert into heshe values (SET CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "CONCAT"
+РЯДОК 1: insert into heshe values (SET CONCAT ('This is ', name, ', h...
+                                       ^
+postgres=# insert into heshe values (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask where id>=1 and id<=6);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# insert into heshe values (SET CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "CONCAT"
+РЯДОК 1: insert into heshe values (SET CONCAT ('This is ', name, ', h...
+                                       ^
+postgres=# insert into heshe values (SET (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask));
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# insert into heshe values (SET (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask));
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# \d heshe
+                             Таблиця "public.heshe"
+ Стовпець |          Тип           | Сортування | Обнуляється | За замовчуванням
+----------+------------------------+------------+-------------+------------------
+ info     | character varying(255) |            |             |
+
+
+postgres=# insert into heshe (info)  values (SET (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask));
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', name, ', he/she has email ', email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ('This is ', name, ', he/she has email ', email) FROM modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', modtask.name, ', he/she has email ', modtask.email));
+ПОМИЛКА:  таблиця "modtask" відсутня в реченні FROM
+РЯДОК 1: ...rt into heshe (info)  values (CONCAT ('This is ', modtask.na...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', modtask.name, ', he/she has email ', modtask.email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...dtask.name, ', he/she has email ', modtask.email) FROM modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', modtask.name, ', he/she has email ', modtask.email), FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...task.name, ', he/she has email ', modtask.email), FROM modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', modtask.name, ', he/she has email ', modtask.email) FROM table modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...dtask.name, ', he/she has email ', modtask.email) FROM table...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', name.modtask, ', he/she has email ', email.modtask) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...me.modtask, ', he/she has email ', email.modtask) FROM modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', name.modtask, ', he/she has email ', email.modtask));
+ПОМИЛКА:  таблиця "name" відсутня в реченні FROM
+РЯДОК 1: ...rt into heshe (info)  values (CONCAT ('This is ', name.modta...
+                                                              ^
+postgres=# insert into heshe (info)  values (CONCAT ('This is ', modtask.name, ', he/she has email ', modtask.email) FROM modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...dtask.name, ', he/she has email ', modtask.email) FROM modta...
+                                                              ^
+
+--ЦЕ ЛИШЕ ЧАСТИНА
+
+postgres=# INSERT INTO heshe (info) SELECT CONCAT ('This is ', name, ', he/she has email ', email)  FROM modtask;
+INSERT 0 6
+
+postgres=# select * from heshe;
+                       info
+---------------------------------------------------
+ This is Vasya, he/she has email mmm@mmail.com
+ This is Alex, he/she has email mmm@gmail.com
+ This is Alexey, he/she has email alexey@gmail.com
+ This is Helen, he/she has email hell@gmail.com
+ This is Jenny, he/she has email eachup@gmail.com
+ This is Lora, he/she has email tpicks@gmail.com
+(6 рядків)
+
+
+postgres=# DROP TABLE heshe;
+postgres=# CREATE TABLE heshe (info varchar(255));
+CREATE TABLE 
+postgres=# INSERT INTO heshe (info) SELECT CONCAT ('This is ', name, ', ', (CASE WHEN gender = 'm' THEN 'he'  ELSE 'she' END) ,' has email ', email)  FROM modtask;
+INSERT 0 6
+postgres=# select * from heshe;
+                     info
+-----------------------------------------------
+ This is Vasya, he has email mmm@mmail.com
+ This is Alex, he has email mmm@gmail.com
+ This is Alexey, he has email alexey@gmail.com
+ This is Helen, she has email hell@gmail.com
+ This is Jenny, she has email eachup@gmail.com
+ This is Lora, she has email tpicks@gmail.com
+(6 рядків)
+
+-- ЗАДАЧА 3 РАХУВАВННЯ
+postgres=# SELECT COUNT ‘f’ FROM  modtask;
+ПОМИЛКА:  стовпця "count" не існує
+РЯДОК 1: SELECT COUNT ‘f’ FROM  modtask;
+                ^
+postgres=# SELECT gender COUNT ‘f’ FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "‘f’"
+РЯДОК 1: SELECT gender COUNT ‘f’ FROM  modtask;
+                             ^
+postgres=# SELECT gender COUNT 'f' FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "'f'"
+РЯДОК 1: SELECT gender COUNT 'f' FROM  modtask;
+                             ^
+postgres=# SELECT gender COUNT('f') FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "("
+РЯДОК 1: SELECT gender COUNT('f') FROM  modtask;
+                            ^
+postgres=# SELECT COUNT(gender) FROM  modtask;
+ count
+-------
+     6
+(1 рядок)
+
+
+postgres=# SELECT COUNT(gender) GROUP BY gender  FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: SELECT COUNT(gender) GROUP BY gender  FROM  modtask;
+                                               ^
+postgres=# SELECT COUNT(gender) FROM  modtask GROUP BY gender  ;
+ count
+-------
+     3
+     3
+(2 рядки)
+
+
+postgres=# SELECT COUNT(gender) FROM  modtask GROUP BY gender HAVING  COUNT(gender)= 'f';
+ПОМИЛКА:  неприпустимий синтаксис для типу bigint: "f"
+РЯДОК 1: ...r) FROM  modtask GROUP BY gender HAVING  COUNT(gender)= 'f';
+                                                                    ^
+postgres=# SELECT COUNT(gender) FROM  modtask GROUP BY gender HAVING  COUNT(gender= 'f');
+ПОМИЛКА:  аргумент конструкції HAVING повинен бути типу boolean, не типу bigint
+РЯДОК 1: ...UNT(gender) FROM  modtask GROUP BY gender HAVING  COUNT(gend...
+                                                              ^
+postgres=# SELECT COUNT(gender) FROM  modtask GROUP BY gender WHERE gender = 'f' ;
+ПОМИЛКА:  синтаксична помилка в або поблизу "WHERE"
+РЯДОК 1: ...ELECT COUNT(gender) FROM  modtask GROUP BY gender WHERE gend...
+                                                              ^
+postgres=# SELECT COUNT(gender) FROM  modtask WHERE gender = 'f' ;
+ count
+-------
+     3
+(1 рядок)
+
+
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE WHEN gender = 'm' THEN COUNT(gender) ELSE COUNT(gender) END) , (CASE WHEN gender = 'm' THEN  ' boys!' ELSE ' girls!' END) ) FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: ...nformation) SELECT CONCAT ('We have ', (CASE WHEN gender = '...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  COUNT(gender)  WHEN gender = 'm' ELSE COUNT(gender) END) , (CASE WHEN gender = 'm' THEN  ' boys!' ELSE ' girls!' END) ) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "ELSE"
+РЯДОК 1: ...e have ', (CASE  COUNT(gender)  WHEN gender = 'm' ELSE COUNT...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END), ' boys!'      ELSE SUM(CASE WHEN gender = 'f' THEN 1 ELSE 0 END ), ' girls!' END)  FROM  modtask;
+postgres(# )
+postgres-# ;
+ПОМИЛКА:  синтаксична помилка в або поблизу ","
+РЯДОК 1: ...THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END), ' boys!'...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END) ' boys!'      ELSE SUM(CASE WHEN gender = 'f' THEN 1 ELSE 0 END ) ' girls!' END)  FROM  modtask;
+postgres(# )
+postgres-# ;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... gender = 'f' THEN 1 ELSE 0 END ) ' girls!' END)  FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END), ' boys!'      ELSE SUM(CASE WHEN gender = 'f' THEN 1 ELSE 0 END ), ' girls!' END)  FROM  modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу ","
+РЯДОК 1: ...THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END), ' boys!'...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END) ' boys!'      ELSE SUM(CASE WHEN gender = 'f' THEN 1 ELSE 0 END )  ' girls!' END)  FROM  modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...gender = 'f' THEN 1 ELSE 0 END )  ' girls!' END)  FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE WHEN gender = 'm' THEN 1 ELSE 0 END) ' boys!'      ELSE SUM(CASE WHEN gender = 'f' THEN 1 ELSE 0 END )  ' girls!' END) ) FROM  modtask;
+ПОМИЛКА:  тип "sum" не існує
+РЯДОК 1: ...CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN SUM(CASE W...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN COUNT(*) ' boys!'      ELSE COUNT(*)  ' girls!' END) ) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "' boys!'"
+РЯДОК 1: ...We have ', (CASE  WHEN gender = 'm' THEN COUNT(*) ' boys!'  ...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN COUNT(*), ' boys!'      ELSE COUNT(*),  ' girls!' END) ) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу ","
+РЯДОК 1: ...'We have ', (CASE  WHEN gender = 'm' THEN COUNT(*), ' boys!'...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!')      ELSE CONCAT  (COUNT(*),  ' girls!' END) )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "END"
+РЯДОК 1: ...' boys!')      ELSE CONCAT  (COUNT(*),  ' girls!' END) )) FR...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!')      ELSE CONCAT  (COUNT(*),  ' girls!') END )) FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: ...formation) SELECT CONCAT ('We have ', (CASE  WHEN gender = '...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modtask)      ELSE CONCAT  (COUNT(*),  ' girls!' FROM  modtask) END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modt...
+                                                              ^
+postgres=#
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modtask)      ELSE CONCAT  (COUNT(*),  ' girls!' FROM  modtask) END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modtask)      ELSE CONCAT  (COUNT(*),  ' girls!' FROM  modtask) END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!' FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') FROM  modtask      ELSE CONCAT  (COUNT(*),  ' girls!') FROM  modtask END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!')  END )) FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: ...formation) SELECT CONCAT ('We have ', (CASE  WHEN gender = '...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*) FROM  modtask, ' boys!') ELSE CONCAT  (COUNT(*) FROM  modtask,  ' girls!')  END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*) FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!')  FROM  modtask, END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!')  FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!')  FROM  modtask END )) FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!')  FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!') END ) FROM  modtask);
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ...boys!') ELSE CONCAT  (COUNT(*),  ' girls!') END ) FROM  modt...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT  FROM  modtask CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!') END ));
+ПОМИЛКА:  синтаксична помилка в або поблизу "'We have '"
+РЯДОК 1: ...gender_information) SELECT  FROM  modtask CONCAT ('We have '...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information) SELECT  CONCAT ('We have ', (CASE  WHEN gender = 'm' THEN CONCAT(COUNT(*), ' boys!') ELSE CONCAT  (COUNT(*),  ' girls!') END ))  FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: ...ormation) SELECT  CONCAT ('We have ', (CASE  WHEN gender = '...
+                                                              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN SELECT CONCAT(COUNT(*), ' boys!')
+postgres(# ELSE SELECT CONCAT  (COUNT(*),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "SELECT"
+РЯДОК 5: THEN SELECT CONCAT(COUNT(*), ' boys!')
+              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN SELECT CONCAT(COUNT(gender = 'm'), ' boys!')
+postgres(# ELSE SELECT CONCAT  (COUNT(gender = 'f'),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "SELECT"
+РЯДОК 5: THEN SELECT CONCAT(COUNT(gender = 'm'), ' boys!')
+              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN  CONCAT(COUNT(gender = 'm'), ' boys!')
+postgres(# ELSE  CONCAT  (COUNT(gender = 'f'),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 4: WHEN gender = 'm'
+              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm' GROUP BY  gender
+postgres(# THEN  CONCAT(COUNT(gender = 'm'), ' boys!')
+postgres(# ELSE  CONCAT  (COUNT(gender = 'f'),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "GROUP"
+РЯДОК 4: WHEN gender = 'm' GROUP BY  gender
+                           ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN  CONCAT(COUNT('m') BY  gender, ' boys!')
+postgres(# ELSE  CONCAT  (COUNT('f') BY  gender,  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  синтаксична помилка в або поблизу "BY"
+РЯДОК 5: THEN  CONCAT(COUNT('m') BY  gender, ' boys!')
+                                 ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN  CONCAT(COUNT('m'), ' boys!')
+postgres(# ELSE  CONCAT  (COUNT('f'),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask;
+ПОМИЛКА:  стовпець "modtask.gender" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 4: WHEN gender = 'm'
+              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN SELECT CONCAT(COUNT(*), ' boys!')
+postgres(# ELSE SELECT CONCAT  (COUNT(*),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask GROUP BY gender;
+ПОМИЛКА:  синтаксична помилка в або поблизу "SELECT"
+РЯДОК 5: THEN SELECT CONCAT(COUNT(*), ' boys!')
+              ^
+postgres=# INSERT INTO gi (gender_information)
+postgres-# SELECT  CONCAT ('We have ',
+postgres(# (CASE
+postgres(# WHEN gender = 'm'
+postgres(# THEN  CONCAT(COUNT(*), ' boys!')
+postgres(# ELSE  CONCAT  (COUNT(*),  ' girls!')
+postgres(# END ))
+postgres-# FROM  modtask GROUP BY gender;
+INSERT 0 2
+postgres=# select * from gi;
+ gender_information
+--------------------
+ We have 3 boys!
+ We have 3 girls!
+(2 рядки)
+
+-- ЗАДАЧА 4 ТАБЛИЦЯ
+
+postgres=# drop table word;
+DROP TABLE
+postgres=# create table word (id serial, word varchar(255), vocabulary_id integer);
+CREATE TABLE
+postgres=# create table vocabulary (id serial, name varchar(255), info text);
+ПОМИЛКА:  відношення "vocabulary" вже існує
+postgres=# INSERT INTO vocabulary
+postgres-# (name)
+postgres-# VALUES
+postgres-# ('animals'),
+postgres-# ('school'),
+postgres-# ('nature'),
+postgres-# ('human'),
+postgres-# ('SF');
+INSERT 0 5
+postgres=#
+postgres=# INSERT INTO word
+postgres-# (word, vocabulary_id)
+postgres-# VALUES
+postgres-# ('turtle', 1),
+postgres-# ('pig', 1),
+postgres-# ('dog', 1),
+postgres-# ('cat', 1),
+postgres-# ('lizard', 1),
+postgres-# ('cow', 1),
+postgres-# ('rabbit', 1),
+postgres-# ('frog', 1),
+postgres-# ('headgehog', 1),
+postgres-# ('goat', 1);
+INSERT 0 10
+postgres=#
+postgres=# INSERT INTO word
+postgres-# (word, vocabulary_id)
+postgres-# VALUES
+postgres-# ('desk', 2),
+postgres-# ('book', 2),
+postgres-# ('chalk', 2),
+postgres-# ('pen', 2),
+postgres-# ('pencil', 2),
+postgres-# ('copybook', 2),
+postgres-# ('lesson', 2),
+postgres-# ('teacher', 2),
+postgres-# ('pupils', 2),
+postgres-# ('school', 2);
+INSERT 0 10
+postgres=#
+postgres=# INSERT INTO word
+postgres-# (word, vocabulary_id)
+postgres-# VALUES
+postgres-# ('ray', 3),
+postgres-# ('thunder', 3),
+postgres-# ('sun', 3),
+postgres-# ('field', 3),
+postgres-# ('hill', 3),
+postgres-# ('mountain', 3),
+postgres-# ('river', 3),
+postgres-# ('forest', 3),
+postgres-# ('grass', 3),
+postgres-# ('rain', 3);
+INSERT 0 10
+postgres=#
+postgres=# INSERT INTO word
+postgres-# (word, vocabulary_id)
+postgres-# VALUES
+postgres-# ('hair', 4),
+postgres-# ('nail', 4),
+postgres-# ('finger', 4),
+postgres-# ('eye', 4),
+postgres-# ('tooth', 4),
+postgres-# ('knee', 4),
+postgres-# ('elbow', 4),
+postgres-# ('leg', 4),
+postgres-# ('arm', 4),
+postgres-# ('head', 4);
+INSERT 0 10
+postgres=#
+postgres=# INSERT INTO word
+postgres-# (word, vocabulary_id)
+postgres-# VALUES
+postgres-# ('engine', 5),
+postgres-# ('steel', 5),
+postgres-# ('power', 5),
+postgres-# ('nuclear', 5),
+postgres-# ('shotgun', 5),
+postgres-# ('laser', 5),
+postgres-# ('flight', 5),
+postgres-# ('energy', 5),
+postgres-# ('Moon', 5),
+postgres-# ('splace', 5);
+INSERT 0 10
+postgres=# select * from word;
+ id |   word    | vocabulary_id
+----+-----------+---------------
+  1 | turtle    |             1
+  2 | pig       |             1
+  3 | dog       |             1
+  4 | cat       |             1
+  5 | lizard    |             1
+  6 | cow       |             1
+  7 | rabbit    |             1
+  8 | frog      |             1
+  9 | headgehog |             1
+ 10 | goat      |             1
+ 11 | desk      |             2
+ 12 | book      |             2
+ 13 | chalk     |             2
+ 14 | pen       |             2
+ 15 | pencil    |             2
+ 16 | copybook  |             2
+ 17 | lesson    |             2
+ 18 | teacher   |             2
+ 19 | pupils    |             2
+ 20 | school    |             2
+ 21 | ray       |             3
+ 22 | thunder   |             3
+ 23 | sun       |             3
+ 24 | field     |             3
+ 25 | hill      |             3
+ 26 | mountain  |             3
+ 27 | river     |             3
+ 28 | forest    |             3
+ 29 | grass     |             3
+ 30 | rain      |             3
+ 31 | hair      |             4
+ 32 | nail      |             4
+ 33 | finger    |             4
+ 34 | eye       |             4
+ 35 | tooth     |             4
+ 36 | knee      |             4
+ 37 | elbow     |             4
+ 38 | leg       |             4
+ 39 | arm       |             4
+ 40 | head      |             4
+ 41 | engine    |             5
+ 42 | steel     |             5
+ 43 | power     |             5
+ 44 | nuclear   |             5
+ 45 | shotgun   |             5
+ 46 | laser     |             5
+ 47 | flight    |             5
+ 48 | energy    |             5
+ 49 | Moon      |             5
+ 50 | splace    |             5
+(50 рядків)
+
+
+postgres=# SELECT  GROUP BY vocabulary_id FROM word;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: SELECT  GROUP BY vocabulary_id FROM word;
+                                        ^
+postgres=# SELECT *  GROUP BY vocabulary_id FROM word;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: SELECT *  GROUP BY vocabulary_id FROM word;
+                                          ^
+postgres=# SELECT * FROM word GROUP BY vocabulary_id;
+ПОМИЛКА:  стовпець "word.id" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: SELECT * FROM word GROUP BY vocabulary_id;
+                ^
+postgres=# SELECT vocabulary_id FROM word GROUP BY  vocabulary_id;
+ vocabulary_id
+---------------
+             3
+             5
+             4
+             2
+             1
+(5 рядків)
+
+
+postgres=# SELECT vocabulary_id FROM word COUNT  vocabulary_id GROUP BY  vocabulary_id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "vocabulary_id"
+РЯДОК 1: SELECT vocabulary_id FROM word COUNT  vocabulary_id GROUP BY...
+                                               ^
+postgres=# SELECT vocabulary_id FROM word COUNT(vocabulary_id) GROUP BY  vocabulary_id;
+ПОМИЛКА:  посилання на стовпець "vocabulary_id" є неоднозначним
+РЯДОК 1: SELECT vocabulary_id FROM word COUNT(vocabulary_id) GROUP BY...
+                ^
+postgres=# SELECT vocabulary_id FROM word COUNT(*) GROUP BY  vocabulary_id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "*"
+РЯДОК 1: SELECT vocabulary_id FROM word COUNT(*) GROUP BY  vocabulary...
+                                              ^
+postgres=# SELECT vocabulary_id FROM word GROUP BY  vocabulary_id COUNT(*);
+ПОМИЛКА:  синтаксична помилка в або поблизу "COUNT"
+РЯДОК 1: ...CT vocabulary_id FROM word GROUP BY  vocabulary_id COUNT(*);
+                                                               ^
+postgres=# SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id = vocabulary.id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "vocabulary"
+РЯДОК 1: SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id =...
+                                  ^
+postgres=# drop table vocabulary;
+DROP TABLE
+postgres=# create table vocabulary (id serial, name varchar(255), info text);
+CREATE TABLE
+postgres=# SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id = vocabulary.id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "vocabulary"
+РЯДОК 1: SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id =...
+                                  ^
+postgres=# INSERT INTO vocabulary
+postgres-# (name)
+postgres-# VALUES
+postgres-# ('animals'),
+postgres-# ('school'),
+postgres-# ('nature'),
+postgres-# ('human'),
+postgres-# ('SF');
+INSERT 0 5
+
+-- ЗАДАЧА 5 ПІДРАХУНОК
+postgres=# SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id = vocabulary.id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "vocabulary"
+РЯДОК 1: SELECT * FROM word RIGHT vocabulary ON  word.vocabulary_id =...
+                                  ^
+postgres=# SELECT * FROM word RIGHT vocabulary ON  vocabulary.id = word.vocabulary_id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "vocabulary"
+РЯДОК 1: SELECT * FROM word RIGHT vocabulary ON  vocabulary.id = word...
+                                  ^
+postgres=# select * from word;
+ id |   word    | vocabulary_id
+----+-----------+---------------
+  1 | turtle    |             1
+  2 | pig       |             1
+  3 | dog       |             1
+  4 | cat       |             1
+  5 | lizard    |             1
+  6 | cow       |             1
+  7 | rabbit    |             1
+  8 | frog      |             1
+  9 | headgehog |             1
+ 10 | goat      |             1
+ 11 | desk      |             2
+ 12 | book      |             2
+ 13 | chalk     |             2
+ 14 | pen       |             2
+ 15 | pencil    |             2
+ 16 | copybook  |             2
+ 17 | lesson    |             2
+ 18 | teacher   |             2
+ 19 | pupils    |             2
+ 20 | school    |             2
+ 21 | ray       |             3
+ 22 | thunder   |             3
+ 23 | sun       |             3
+ 24 | field     |             3
+ 25 | hill      |             3
+ 26 | mountain  |             3
+ 27 | river     |             3
+ 28 | forest    |             3
+ 29 | grass     |             3
+ 30 | rain      |             3
+ 31 | hair      |             4
+ 32 | nail      |             4
+ 33 | finger    |             4
+ 34 | eye       |             4
+ 35 | tooth     |             4
+ 36 | knee      |             4
+ 37 | elbow     |             4
+ 38 | leg       |             4
+ 39 | arm       |             4
+ 40 | head      |             4
+ 41 | engine    |             5
+ 42 | steel     |             5
+ 43 | power     |             5
+ 44 | nuclear   |             5
+ 45 | shotgun   |             5
+ 46 | laser     |             5
+ 47 | flight    |             5
+ 48 | energy    |             5
+ 49 | Moon      |             5
+ 50 | splace    |             5
+(50 рядків)
+
+
+
+postgres=# select * from words;
+ПОМИЛКА:  відношення "words" не існує
+РЯДОК 1: select * from words;
+                       ^
+postgres=# select * from word;
+ id |   word    | vocabulary_id
+----+-----------+---------------
+  1 | turtle    |             1
+  2 | pig       |             1
+  3 | dog       |             1
+  4 | cat       |             1
+  5 | lizard    |             1
+  6 | cow       |             1
+  7 | rabbit    |             1
+  8 | frog      |             1
+  9 | headgehog |             1
+ 10 | goat      |             1
+ 11 | desk      |             2
+ 12 | book      |             2
+ 13 | chalk     |             2
+ 14 | pen       |             2
+ 15 | pencil    |             2
+ 16 | copybook  |             2
+ 17 | lesson    |             2
+ 18 | teacher   |             2
+ 19 | pupils    |             2
+ 20 | school    |             2
+ 21 | ray       |             3
+ 22 | thunder   |             3
+ 23 | sun       |             3
+ 24 | field     |             3
+ 25 | hill      |             3
+ 26 | mountain  |             3
+ 27 | river     |             3
+ 28 | forest    |             3
+ 29 | grass     |             3
+ 30 | rain      |             3
+ 31 | hair      |             4
+ 32 | nail      |             4
+ 33 | finger    |             4
+ 34 | eye       |             4
+ 35 | tooth     |             4
+ 36 | knee      |             4
+ 37 | elbow     |             4
+ 38 | leg       |             4
+ 39 | arm       |             4
+ 40 | head      |             4
+ 41 | engine    |             5
+ 42 | steel     |             5
+ 43 | power     |             5
+ 44 | nuclear   |             5
+ 45 | shotgun   |             5
+ 46 | laser     |             5
+ 47 | flight    |             5
+ 48 | energy    |             5
+ 49 | Moon      |             5
+ 50 | splace    |             5
+(50 рядків)
+
+
+postgres=# select * from vocabulary;
+ id |  name   | info
+----+---------+------
+  1 | animals |
+  2 | school  |
+  3 | nature  |
+  4 | human   |
+  5 | SF      |
+(5 рядків)
+
+
+postgres=# SELECT * FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+ id |   word    | vocabulary_id | id |  name   | info
+----+-----------+---------------+----+---------+------
+ 10 | goat      |             1 |  1 | animals |
+  9 | headgehog |             1 |  1 | animals |
+  8 | frog      |             1 |  1 | animals |
+  7 | rabbit    |             1 |  1 | animals |
+  6 | cow       |             1 |  1 | animals |
+  5 | lizard    |             1 |  1 | animals |
+  4 | cat       |             1 |  1 | animals |
+  3 | dog       |             1 |  1 | animals |
+  2 | pig       |             1 |  1 | animals |
+  1 | turtle    |             1 |  1 | animals |
+ 20 | school    |             2 |  2 | school  |
+ 19 | pupils    |             2 |  2 | school  |
+ 18 | teacher   |             2 |  2 | school  |
+ 17 | lesson    |             2 |  2 | school  |
+ 16 | copybook  |             2 |  2 | school  |
+ 15 | pencil    |             2 |  2 | school  |
+ 14 | pen       |             2 |  2 | school  |
+ 13 | chalk     |             2 |  2 | school  |
+ 12 | book      |             2 |  2 | school  |
+ 11 | desk      |             2 |  2 | school  |
+ 30 | rain      |             3 |  3 | nature  |
+ 29 | grass     |             3 |  3 | nature  |
+ 28 | forest    |             3 |  3 | nature  |
+ 27 | river     |             3 |  3 | nature  |
+ 26 | mountain  |             3 |  3 | nature  |
+ 25 | hill      |             3 |  3 | nature  |
+ 24 | field     |             3 |  3 | nature  |
+ 23 | sun       |             3 |  3 | nature  |
+ 22 | thunder   |             3 |  3 | nature  |
+ 21 | ray       |             3 |  3 | nature  |
+ 40 | head      |             4 |  4 | human   |
+ 39 | arm       |             4 |  4 | human   |
+ 38 | leg       |             4 |  4 | human   |
+ 37 | elbow     |             4 |  4 | human   |
+ 36 | knee      |             4 |  4 | human   |
+ 35 | tooth     |             4 |  4 | human   |
+ 34 | eye       |             4 |  4 | human   |
+ 33 | finger    |             4 |  4 | human   |
+ 32 | nail      |             4 |  4 | human   |
+ 31 | hair      |             4 |  4 | human   |
+ 50 | splace    |             5 |  5 | SF      |
+ 49 | Moon      |             5 |  5 | SF      |
+ 48 | energy    |             5 |  5 | SF      |
+ 47 | flight    |             5 |  5 | SF      |
+ 46 | laser     |             5 |  5 | SF      |
+ 45 | shotgun   |             5 |  5 | SF      |
+ 44 | nuclear   |             5 |  5 | SF      |
+ 43 | power     |             5 |  5 | SF      |
+ 42 | steel     |             5 |  5 | SF      |
+ 41 | engine    |             5 |  5 | SF      |
+(50 рядків)
+
+
+postgres=#
+postgres=#
+postgres=# SELECT name, id FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+ПОМИЛКА:  посилання на стовпець "id" є неоднозначним
+РЯДОК 1: SELECT name, id FROM word RIGHT JOIN vocabulary ON  vocabula...
+                      ^
+postgres=# SELECT name, vocabulary_id FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+  name   | vocabulary_id
+---------+---------------
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ animals |             1
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ school  |             2
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ nature  |             3
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ human   |             4
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+ SF      |             5
+(50 рядків)
+
+
+postgres=#
+postgres=# SELECT name, vocabulary_id FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROPE BY name;
+ПОМИЛКА:  синтаксична помилка в або поблизу "GROPE"
+РЯДОК 1: ...vocabulary ON  vocabulary.id = word.vocabulary_id GROPE BY n...
+                                                              ^
+postgres=# SELECT name, AVG(vocabulary_id FROM) word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROPE BY name;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: SELECT name, AVG(vocabulary_id FROM) word RIGHT JOIN vocabul...
+                                        ^
+postgres=# SELECT name, AVG(vocabulary_id) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROPE BY name;
+ПОМИЛКА:  синтаксична помилка в або поблизу "GROPE"
+РЯДОК 1: ...vocabulary ON  vocabulary.id = word.vocabulary_id GROPE BY n...
+                                                              ^
+postgres=# SELECT name, AVG(vocabulary_id) GROUP BY vocabulary_id  FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: ... name, AVG(vocabulary_id) GROUP BY vocabulary_id  FROM word ...
+                                                              ^
+postgres=# SELECT name, AVG(vocabulary_id) GROUP BY name FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+ПОМИЛКА:  синтаксична помилка в або поблизу "FROM"
+РЯДОК 1: SELECT name, AVG(vocabulary_id) GROUP BY name FROM word RIGH...
+                                                       ^
+postgres=# SELECT name, AVG(vocabulary_id) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id;
+ПОМИЛКА:  стовпець "vocabulary.name" повинен з'являтися у реченні Група BY або використовуватися в агрегатній функції
+РЯДОК 1: SELECT name, AVG(vocabulary_id) FROM word RIGHT JOIN vocabul...
+                ^
+postgres=# SELECT name, AVG(vocabulary_id) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROUP BY name ;
+  name   |          avg
+---------+------------------------
+ animals | 1.00000000000000000000
+ school  |     2.0000000000000000
+ SF      |     5.0000000000000000
+ human   |     4.0000000000000000
+ nature  |     3.0000000000000000
+(5 рядків)
+
+
+postgres=# SELECT name, COUNT(name) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROUP BY name ;
+  name   | count
+---------+-------
+ animals |    10
+ school  |    10
+ SF      |    10
+ human   |    10
+ nature  |    10
+(5 рядків)
+
+
+postgres=# SELECT name, words = COUNT(name) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROUP BY name ;
+ПОМИЛКА:  стовпця "words" не існує
+РЯДОК 1: SELECT name, words = COUNT(name) FROM word RIGHT JOIN vocabu...
+                      ^
+ПІДКАЗКА:  Можливо, передбачалось посилання на стовпець "word.word".
+postgres=# CREATE TABLE nw (name varchar(250), words integer);
+CREATE TABLE
+postgres=# INSERT INTO nw (name, words) SELECT name, COUNT(name) FROM word RIGHT JOIN vocabulary ON  vocabulary.id = word.vocabulary_id GROUP BY name ;
+INSERT 0 5
+postgres=# select * from nw;
+  name   | words
+---------+-------
+ animals |    10
+ school  |    10
+ SF      |    10
+ human   |    10
+ nature  |    10
+(5 рядків)
+
+
+postgres=#
